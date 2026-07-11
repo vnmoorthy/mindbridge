@@ -10,6 +10,11 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# Force hermetic demo mode regardless of any local .env / real key, so tests
+# never make a network call. (app._load_dotenv skips vars already in os.environ.)
+os.environ["MINDBRIDGE_INFERENCE_KEY"] = ""
+os.environ["DIGITALOCEAN_INFERENCE_KEY"] = ""
+
 import app as mindbridge  # noqa: E402
 
 
