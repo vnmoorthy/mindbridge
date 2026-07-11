@@ -137,3 +137,50 @@ def test_rate_limit_kicks_in():
     assert codes[0] == 200          # first request is allowed
     assert 429 in codes             # the flood is throttled
     mindbridge._rate_hits.clear()   # don't leak state into other tests
+
+
+# --- Basecamp SF (routine engine) ---
+def test_basecamp_config():
+    r = client().get("/api/basecamp/config")
+    assert r.status_code == 200
+    d = r.get_json()
+    assert len(d["tracks"]) == 3
+    assert len(d["phases"]) == 4
+
+
+def test_basecamp_opord_generates_schedule():
+    r = client().post("/api/basecamp/opord", json={"track": "alpha", "phase": 1})
+    assert r.status_code == 200
+    d = r.get_json()
+    assert d["phase"] == 1
+    assert len(d["blocks"]) >= 5
+    # Phase 1 (Garrison) must be fully rigid — no free-choice asymmetric blocks.
+    assert not any(b["type"] == "asymmetric" for b in d["blocks"])
+
+
+def test_basecamp_opord_phase2_has_asymmetric():
+    d = client().post("/api/basecamp/opord", json={"track": "alpha", "phase": 2}).get_json()
+    assert any(b["type"] == "asymmetric" for b in d["blocks"])
+
+
+def test_basecamp_opord_unknown_track():
+    r = client().post("/api/basecamp/opord", json={"track": "nope", "phase": 1})
+    assert r.status_code == 400
+
+
+def test_basecamp_sitrep_normal():
+    mindbridge._rate_hits.clear()
+    r = client().post("/api/basecamp/sitrep", json={"period": "am", "moodBucket": "mid",
+                                                    "fields": {"Sleep": "ok"}, "note": "slept alright, ready to go"})
+    assert r.status_code == 200
+    d = r.get_json()
+    assert d["crisis"] is False and isinstance(d["reply"], str) and d["reply"]
+
+
+def test_basecamp_sitrep_crisis_escalates():
+    mindbridge._rate_hits.clear()
+    r = client().post("/api/basecamp/sitrep", json={"period": "pm", "note": "I don't want to be here anymore"})
+    d = r.get_json()
+    assert d["crisis"] is True
+    assert "988" in json.dumps(d)
+    mindbridge._rate_hits.clear()

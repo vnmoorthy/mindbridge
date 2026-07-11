@@ -21,6 +21,7 @@ from flask import Flask, jsonify, render_template, request
 from crisis import CrisisDetector
 from retrieval import KnowledgeBase, ResourceIndex
 from demo_responder import demo_reply
+from basecamp import Basecamp, autonomy_signal
 
 BASE = Path(__file__).parent
 
@@ -71,6 +72,7 @@ def set_security_headers(resp):
 KB = KnowledgeBase()
 RESOURCES = ResourceIndex()
 CRISIS = CrisisDetector()
+BASECAMP = Basecamp()
 
 _prompt_path = BASE / "prompts" / "system.txt"
 SYSTEM_PROMPT = (
@@ -250,6 +252,68 @@ def chat():
         "sources": [d["title"] for d in kb_docs],
         "mode": mode,
     })
+
+
+# ---------------- Basecamp SF (routine engine, alongside the companion) --------
+def analyze_sitrep(period, fields, note, mood_bucket):
+    global _last_inference_ok
+    summary = ", ".join(f"{k}: {v}" for k, v in (fields or {}).items() if v)
+    client = get_client()
+    if client is not None:
+        try:
+            sysp = BASECAMP.sitrep.get("systemPrompt") or "You are the Basecamp SitRep AI, a warm companion for a veteran. You are not a clinician."
+            content = f"{str(period).upper()} SitRep. Ratings — {summary or 'none given'}. In their words: {note or '(no note)'}"
+            resp = client.chat.completions.create(
+                model=MODEL,
+                messages=[{"role": "system", "content": sysp}, {"role": "user", "content": content}],
+                temperature=0.7, max_tokens=220,
+            )
+            _last_inference_ok = True
+            return resp.choices[0].message.content.strip(), "live"
+        except Exception as exc:
+            _last_inference_ok = False
+            app.logger.warning("SitRep inference failed, using demo ack: %s", exc)
+    acks = BASECAMP.sitrep.get("demoAcks", {})
+    reply = acks.get(mood_bucket) or acks.get("mid") or "Thanks for the SitRep — logged. Let's take the day one block at a time."
+    return reply, "demo"
+
+
+@app.route("/api/basecamp/config")
+def basecamp_config():
+    return jsonify(BASECAMP.config())
+
+
+@app.route("/api/basecamp/opord", methods=["POST"])
+def basecamp_opord():
+    body = request.get_json(force=True, silent=True) or {}
+    o = BASECAMP.get_opord(body.get("track"), body.get("phase", 1))
+    if not o:
+        return jsonify({"error": "unknown track"}), 400
+    return jsonify(o)
+
+
+@app.route("/api/basecamp/sitrep", methods=["POST"])
+def basecamp_sitrep():
+    if not _rate_ok(_client_ip()):
+        return jsonify({"reply": "Easy — one SitRep at a time. Give it a moment.", "crisis": False, "autonomy": 0}), 429
+    body = request.get_json(force=True, silent=True) or {}
+    note = body.get("note") if isinstance(body.get("note"), str) else ""
+    note = (note or "").strip()
+    fields = body.get("fields") if isinstance(body.get("fields"), dict) else {}
+    period = body.get("period", "am")
+    mood_bucket = body.get("moodBucket", "mid")
+
+    c = CRISIS.check(note)
+    if c["triggered"]:
+        return jsonify({
+            "reply": c["spoken"], "crisis": True,
+            "escalation": {"title": c["title"], "markdown": c["markdown"], "resources": c["resources"]},
+            "autonomy": 0,
+        })
+    reply, mode = analyze_sitrep(period, fields, note, mood_bucket)
+    resources = RESOURCES.search(note, k=1) if note else []
+    return jsonify({"reply": reply, "crisis": False, "autonomy": autonomy_signal(note),
+                    "resources": resources, "mode": mode})
 
 
 if __name__ == "__main__":

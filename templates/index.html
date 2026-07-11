@@ -24,6 +24,7 @@
     </div>
     <div class="topbar-right">
       <span id="modeBadge" class="badge badge--demo" title="How MindBridge is answering right now">demo</span>
+      <button id="basecampBtn" class="pill-btn" type="button">Basecamp</button>
       <button id="resBtn" class="pill-btn" type="button">Resources</button>
       <button id="muteBtn" class="icon-btn" aria-pressed="false" title="Mute / unmute the voice">
         <span class="icon-btn__on">🔊</span><span class="icon-btn__off">🔈</span>
@@ -76,6 +77,20 @@
     <span class="safety-footer__cta">In crisis? <strong>Veterans Crisis Line — dial 988, then press 1</strong> · text 838255</span>
   </footer>
 
+  <!-- Basecamp SF routine engine (hidden until opened) -->
+  <div id="basecampView" class="basecamp-view" hidden>
+    <div class="bc-wrap">
+      <div class="bc-top">
+        <div class="bc-brand"><span class="brand-mark" aria-hidden="true"></span> Basecamp SF <small>· routine engine</small></div>
+        <button id="bcClose" class="pill-btn" type="button">Close</button>
+      </div>
+      <div id="bcRoot"></div>
+    </div>
+  </div>
+  <div id="bcSitrep" class="bc-sitrep" role="dialog" aria-modal="true" aria-label="Situation Report" hidden>
+    <div id="bcSitrepCard" class="bc-sitrep__card"></div>
+  </div>
+
   <!-- Resources drawer (hidden until opened) -->
   <div id="resDrawer" class="res-drawer" role="dialog" aria-modal="true" aria-label="Support resources" hidden>
     <div class="res-drawer__panel">
@@ -103,5 +118,6 @@
   </div>
 
   <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/basecamp.js') }}"></script>
 </body>
 </html>
