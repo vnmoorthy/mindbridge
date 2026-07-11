@@ -16,6 +16,7 @@ env/
 # Deck render artifacts
 slide-*.jpg
 MindBridge-pitch-deck.pdf
+Basecamp-SF-pitch-deck.pdf
 
 # OS / editor
 .DS_Store
