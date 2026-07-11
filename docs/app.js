@@ -81,9 +81,28 @@
   var OPENERS = [
     "Thank you for telling me that — it takes something to say it out loud.",
     "I hear you. That sounds like a lot to carry.",
-    "I'm here with you, and I'm listening.",
+    "I'm right here with you, and I'm listening.",
     "That matters, and I'm glad you said it.",
-    "I'm right here. Take your time.",
+    "Okay. Take your time — there's no rush here.",
+    "That's a heavy thing to sit with. I'm not going anywhere.",
+    "I'm really glad you reached out.",
+    "That makes sense — anyone carrying what you're carrying would feel it.",
+    "You don't have to have the words perfect. I'm following you.",
+    "Thank you for trusting me with that.",
+    "I can tell that's weighing on you.",
+    "Let's stay with that for a second — you're not alone in it.",
+    "That took some courage to name.",
+    "I'm here. Whatever it is, we can look at it together.",
+    "It's okay to not be okay right now.",
+    "I appreciate you being straight with me.",
+  ];
+  var CONNECTIVES = [
+    "One thing that helps some veterans: ",
+    "If you're up for it, you could try this — ",
+    "Something small that can steady the moment: ",
+    "When it hits like this, this can help: ",
+    "A lot of folks find this grounding: ",
+    "No pressure, but this sometimes helps: ",
   ];
   var QUESTIONS = [
     "What feels like the hardest part right now?",
@@ -91,21 +110,26 @@
     "When did you first start noticing this?",
     "What does today look like for you?",
     "Would it help to sit with that for a second before we go on?",
+    "What's weighing on you most right now?",
+    "Have you been able to tell anyone else about this?",
+    "What would feel like a small win today?",
+    "What do you need most in this moment — to vent, or to work through it?",
   ];
   function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
 
   function demoReply(text, kb) {
-    var opener = pick(OPENERS), tech = "";
-    if (kb.length) {
+    var parts = [pick(OPENERS)];
+    if (kb.length && Math.random() < 0.6) {
       var bullets = (kb[0].text.match(/^[ \t]*(?:[-*]|\d+\.)[ \t]+(.*)$/gm) || [])
         .map(function (b) { return b.replace(/^[ \t]*(?:[-*]|\d+\.)[ \t]+/, "").replace(/\*\*|\*|`|_/g, "").trim(); })
         .filter(function (b) { return b.length > 25; });
       if (bullets.length) {
         var b = pick(bullets).split(/(?<=[.!?])\s/)[0];
-        tech = " One thing some veterans find steadying: " + b.charAt(0).toLowerCase() + b.slice(1);
+        parts.push(pick(CONNECTIVES) + b.charAt(0).toLowerCase() + b.slice(1));
       }
     }
-    return (opener + tech + " " + pick(QUESTIONS)).trim();
+    parts.push(pick(QUESTIONS));
+    return parts.join(" ").trim();
   }
 
   function respond(text) {

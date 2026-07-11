@@ -158,7 +158,7 @@ def generate_reply(history, user_text, kb_docs, context):
             if not last or (last.get("content") or "").strip() != user_text:
                 messages.append({"role": "user", "content": user_text})
             resp = client.chat.completions.create(
-                model=MODEL, messages=messages, temperature=0.7, max_tokens=320,
+                model=MODEL, messages=messages, temperature=0.85, max_tokens=320,
             )
             _last_inference_ok = True
             return resp.choices[0].message.content.strip(), "live"
@@ -266,7 +266,7 @@ def analyze_sitrep(period, fields, note, mood_bucket):
             resp = client.chat.completions.create(
                 model=MODEL,
                 messages=[{"role": "system", "content": sysp}, {"role": "user", "content": content}],
-                temperature=0.7, max_tokens=220,
+                temperature=0.85, max_tokens=220,
             )
             _last_inference_ok = True
             return resp.choices[0].message.content.strip(), "live"
