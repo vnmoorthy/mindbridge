@@ -425,6 +425,27 @@ body {
 }
 .breathe-done:hover { border-color: var(--teal); color: var(--ink); }
 
+/* ---------- Wind-Down (guided evening routine) ---------- */
+.winddown-overlay {
+  position: fixed; inset: 0; z-index: 73; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 20px; padding: 30px; text-align: center;
+  background: radial-gradient(circle at 50% 38%, #eef2e8, #dde5d4 72%); animation: fade 0.35s ease; overflow-y: auto;
+}
+.winddown-overlay[hidden] { display: none; }
+.wd-dots { display: flex; gap: 6px; margin-bottom: 4px; }
+.wd-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(31, 44, 37, 0.16); }
+.wd-dot.on { background: var(--teal); }
+.wd-title { font-family: var(--font-display); font-size: 1.7rem; font-weight: 650; color: var(--ink); }
+.wd-body { color: var(--ink-soft); max-width: 34ch; line-height: 1.55; }
+.wd-list { list-style: none; padding: 0; margin: 0; text-align: left; max-width: 36ch; display: grid; gap: 9px; }
+.wd-list li { background: var(--card); border: 1px solid var(--card-line); border-radius: 12px; padding: 11px 14px; color: var(--ink); font-size: 0.95rem; }
+.wd-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.wd-chip { background: var(--card); border: 1px solid var(--card-line); color: var(--ink-soft); border-radius: 999px; padding: 8px 15px; cursor: pointer; font-family: inherit; }
+.wd-chip.sel { border-color: var(--teal); color: var(--ink); background: rgba(58, 90, 64, 0.08); }
+.wd-cta { background: var(--teal); color: var(--on-accent); border: none; border-radius: 14px; padding: 12px 26px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.wd-cta:hover { background: var(--teal-deep); }
+.wd-skip { background: transparent; border: none; color: var(--ink-faint); cursor: pointer; font-family: inherit; font-size: 0.85rem; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }

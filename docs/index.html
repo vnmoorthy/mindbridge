@@ -25,6 +25,7 @@
       <span id="modeBadge" class="badge badge--demo" title="This public preview runs entirely in your browser (demo mode).">demo</span>
       <button id="basecampBtn" class="pill-btn" type="button">Routine</button>
       <button id="resBtn" class="pill-btn" type="button">Resources</button>
+      <button id="windDownBtn" class="pill-btn" type="button">Wind-Down</button>
       <button id="muteBtn" class="icon-btn" aria-pressed="false" title="Mute / unmute the voice">
         <span class="icon-btn__on">🔊</span><span class="icon-btn__off">🔈</span>
       </button>
@@ -90,6 +91,8 @@
     <div id="bcSitrepCard" class="bc-sitrep__card"></div>
   </div>
 
+  <div id="windDownOverlay" class="winddown-overlay" role="dialog" aria-modal="true" aria-label="Wind-Down" hidden></div>
+
   <div id="resDrawer" class="res-drawer" role="dialog" aria-modal="true" aria-label="Support resources" hidden>
     <div class="res-drawer__panel">
       <div class="res-drawer__head">
@@ -118,5 +121,6 @@
   <script src="basecamp-data.js"></script>
   <script src="app.js"></script>
   <script src="basecamp.js"></script>
+  <script src="winddown.js"></script>
 </body>
 </html>
