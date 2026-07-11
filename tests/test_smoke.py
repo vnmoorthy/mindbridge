@@ -127,3 +127,13 @@ def test_crisis_ambivalence_always_overrides_reassurance():
     # Negation with ambivalence is high-risk and MUST still escalate.
     assert _triggers("I can't promise I won't hurt myself")
     assert _triggers("I don't want to kill myself but I keep thinking about it")
+
+
+def test_rate_limit_kicks_in():
+    mindbridge._rate_hits.clear()
+    c = client()
+    codes = [c.post("/api/chat", json={"message": "just checking in today"}).status_code
+             for _ in range(mindbridge.RATE_LIMIT + 3)]
+    assert codes[0] == 200          # first request is allowed
+    assert 429 in codes             # the flood is throttled
+    mindbridge._rate_hits.clear()   # don't leak state into other tests

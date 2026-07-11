@@ -266,6 +266,42 @@
   el.muteBtn.addEventListener("click", function () { muted = !muted; el.muteBtn.setAttribute("aria-pressed", String(muted)); if (muted && "speechSynthesis" in window) window.speechSynthesis.cancel(); });
   if (el.starterChips) el.starterChips.addEventListener("click", function (e) { var b = e.target.closest(".chip"); if (b) send(b.textContent); });
 
+  // ---------- resources drawer ----------
+  var _resLoaded = false;
+  function _resCard(r) {
+    var card = document.createElement("div"); card.className = "res-card";
+    var n = document.createElement("div"); n.className = "res-card__name"; n.textContent = r.name; card.appendChild(n);
+    if (r.description) { var d = document.createElement("div"); d.className = "res-card__desc"; d.textContent = r.description; card.appendChild(d); }
+    var meta = document.createElement("div"); meta.className = "res-card__meta";
+    if (r.phone) { var tel = document.createElement("a"); tel.href = "tel:" + r.phone.replace(/[^0-9+]/g, ""); tel.textContent = "📞 " + r.phone; meta.appendChild(tel); }
+    if (r.url) { var a = document.createElement("a"); a.href = r.url.indexOf("http") === 0 ? r.url : "https://" + r.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = "🔗 Website"; meta.appendChild(a); }
+    if (meta.childNodes.length) card.appendChild(meta);
+    if (r.address) { var ad = document.createElement("div"); ad.className = "res-card__addr"; ad.textContent = "📍 " + r.address; card.appendChild(ad); }
+    return card;
+  }
+  function renderResourceList(resources) {
+    var list = document.getElementById("resList"); if (!list) return;
+    list.innerHTML = "";
+    var by = {};
+    (resources || []).forEach(function (r) { var c = r.category || "other"; (by[c] = by[c] || []).push(r); });
+    Object.keys(by).sort().forEach(function (cat) {
+      var h = document.createElement("div"); h.className = "res-cat"; h.textContent = cat.replace(/-/g, " "); list.appendChild(h);
+      by[cat].forEach(function (r) { list.appendChild(_resCard(r)); });
+    });
+  }
+  function openResources() {
+    var ov = document.getElementById("resDrawer"); if (!ov) return;
+    ov.hidden = false;
+    var close = document.getElementById("resClose"); if (close) close.focus();
+    if (!_resLoaded) { _resLoaded = true; renderResourceList((window.MB_DATA && MB_DATA.resources) || []); }
+  }
+  function closeResources() { var ov = document.getElementById("resDrawer"); if (ov) ov.hidden = true; }
+  var _resBtn = document.getElementById("resBtn"); if (_resBtn) _resBtn.addEventListener("click", openResources);
+  var _resClose = document.getElementById("resClose"); if (_resClose) _resClose.addEventListener("click", closeResources);
+  var _resDrawer = document.getElementById("resDrawer");
+  if (_resDrawer) _resDrawer.addEventListener("click", function (e) { if (e.target === _resDrawer) closeResources(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { var ov = document.getElementById("resDrawer"); if (ov && !ov.hidden) closeResources(); } });
+
   // ---------- grounding breath ----------
   var breatheTimer = null;
   var _phases = ["Breathe in", "Hold", "Breathe out", "Hold"];

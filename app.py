@@ -11,6 +11,9 @@ Architecture (deliberately simple and demo-proof):
 Nothing about a user's conversation is persisted server-side.
 """
 import os
+import threading
+import time
+from collections import deque
 from pathlib import Path
 
 from flask import Flask, jsonify, render_template, request
@@ -90,8 +93,34 @@ def get_client():
     global _client
     if _client is None and INFERENCE_KEY:
         from openai import OpenAI
-        _client = OpenAI(api_key=INFERENCE_KEY, base_url=INFERENCE_BASE_URL)
+        # Bounded timeout + a couple of automatic retries so a slow/transient DO
+        # response degrades gracefully instead of hanging a gunicorn worker.
+        _client = OpenAI(api_key=INFERENCE_KEY, base_url=INFERENCE_BASE_URL, timeout=30.0, max_retries=2)
     return _client
+
+
+# --- lightweight in-memory per-IP rate limiting (protects live credits) -----
+RATE_LIMIT = int(os.environ.get("MINDBRIDGE_RATE_LIMIT", "30"))  # requests per window
+RATE_WINDOW = 60  # seconds
+_rate_hits = {}
+_rate_lock = threading.Lock()
+
+
+def _client_ip():
+    fwd = request.headers.get("X-Forwarded-For", "")
+    return (fwd.split(",")[0].strip() if fwd else request.remote_addr) or "unknown"
+
+
+def _rate_ok(ip):
+    now = time.time()
+    with _rate_lock:
+        dq = _rate_hits.setdefault(ip, deque())
+        while dq and dq[0] < now - RATE_WINDOW:
+            dq.popleft()
+        if len(dq) >= RATE_LIMIT:
+            return False
+        dq.append(now)
+        return True
 
 
 def build_context(kb_docs, resources):
@@ -161,6 +190,12 @@ def resources():
 
 @app.route("/api/chat", methods=["POST"])
 def chat():
+    if not _rate_ok(_client_ip()):
+        return jsonify({
+            "reply": "You're sending messages very fast — take a breath, I'm still right here. Give it a moment and try again.",
+            "crisis": False, "resources": [], "sources": [], "mode": "rate_limited",
+        }), 429
+
     body = request.get_json(force=True, silent=True) or {}
     history = body.get("messages")
     if not isinstance(history, list):

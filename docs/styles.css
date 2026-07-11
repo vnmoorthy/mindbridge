@@ -232,6 +232,31 @@ body {
   box-shadow: 0 0 0 3px rgba(79, 209, 197, 0.35);
 }
 
+/* ---------- Resources drawer ---------- */
+.pill-btn {
+  background: rgba(79, 209, 197, 0.1); border: 1px solid var(--card-line); color: var(--ink-soft);
+  padding: 7px 14px; border-radius: 999px; cursor: pointer; font-family: inherit; font-size: 0.85rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+.pill-btn:hover { border-color: var(--teal); color: var(--ink); }
+.res-drawer {
+  position: fixed; inset: 0; z-index: 65; display: flex; justify-content: flex-end;
+  background: rgba(6, 12, 16, 0.7); backdrop-filter: blur(4px); animation: fade 0.25s ease;
+}
+.res-drawer[hidden] { display: none; }
+.res-drawer__panel {
+  width: min(460px, 100%); height: 100%; background: linear-gradient(180deg, #12262e, #0c1c23);
+  border-left: 1px solid var(--card-line); padding: 22px 22px 40px; overflow-y: auto;
+  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.45);
+}
+.res-drawer__head { display: flex; align-items: center; justify-content: space-between; }
+.res-drawer__title { font-size: 1.3rem; font-weight: 650; color: var(--ink); }
+.res-drawer__sub { color: var(--ink-soft); font-size: 0.9rem; margin: 6px 0 8px; line-height: 1.4; }
+.res-cat { color: var(--teal); font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.09em; font-weight: 700; margin: 18px 0 8px; }
+.res-drawer .res-card { margin-bottom: 8px; }
+.res-close { background: transparent; border: 1px solid var(--card-line); color: var(--ink-soft); width: 36px; height: 36px; border-radius: 10px; cursor: pointer; font-size: 1rem; }
+.res-close:hover { border-color: var(--teal); color: var(--ink); }
+
 /* ---------- Grounding breath exercise ---------- */
 .breathe-trigger {
   display: inline-flex; align-items: center; gap: 8px; margin: 10px auto 0;
