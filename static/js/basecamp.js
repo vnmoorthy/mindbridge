@@ -1,4 +1,4 @@
-/* Basecamp SF — routine engine, tabbed shell (Schedule / Missions / Progress /
+/* MindBridge — routine engine, tabbed shell (Schedule / Missions / Progress /
    Profile). One file drives both the live app (fetch /api/basecamp/*) and the
    static demo (window.BC_DATA). Telemetry (Freedom Gauge) lives in localStorage. */
 (function () {
@@ -92,7 +92,7 @@
     root = document.getElementById("bcRoot");
     if (!root) return;
     root.innerHTML = "";
-    if (!CONFIG) { root.appendChild(h("p", "bc-sub", "Loading Basecamp…")); return; }
+    if (!CONFIG) { root.appendChild(h("p", "bc-sub", "Loading your routine…")); return; }
     if (!S.track) { renderOnboarding(); renderNav(); return; }
     if (TAB === "missions") renderMissions();
     else if (TAB === "progress") renderProgress();
@@ -116,9 +116,9 @@
 
   // ---- onboarding ----
   function renderOnboarding() {
-    root.appendChild(h("div", "bc-eyebrow", "Basecamp SF · Onboarding"));
+    root.appendChild(h("div", "bc-eyebrow", "MindBridge · Onboarding"));
     root.appendChild(h("h1", "bc-h1", "Select your reintegration track"));
-    root.appendChild(h("p", "bc-sub", "Your track shapes the daily Operations Order. As your consistency grows, Basecamp hands structure back to you."));
+    root.appendChild(h("p", "bc-sub", "Your track shapes the daily Operations Order. As your consistency grows, MindBridge hands structure back to you."));
     var wrap = h("div", "bc-tracks");
     (CONFIG.tracks || []).forEach(function (t) {
       var card = h("button", "bc-track"); card.type = "button";

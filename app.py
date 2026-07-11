@@ -254,14 +254,14 @@ def chat():
     })
 
 
-# ---------------- Basecamp SF (routine engine, alongside the companion) --------
+# ---------------- MindBridge (routine engine, alongside the companion) --------
 def analyze_sitrep(period, fields, note, mood_bucket):
     global _last_inference_ok
     summary = ", ".join(f"{k}: {v}" for k, v in (fields or {}).items() if v)
     client = get_client()
     if client is not None:
         try:
-            sysp = BASECAMP.sitrep.get("systemPrompt") or "You are the Basecamp SitRep AI, a warm companion for a veteran. You are not a clinician."
+            sysp = BASECAMP.sitrep.get("systemPrompt") or "You are the MindBridge SitRep AI, a warm companion for a veteran. You are not a clinician."
             content = f"{str(period).upper()} SitRep. Ratings — {summary or 'none given'}. In their words: {note or '(no note)'}"
             resp = client.chat.completions.create(
                 model=MODEL,

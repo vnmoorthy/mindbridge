@@ -1,4 +1,4 @@
-"""Basecamp SF module — the routine-engine layer that sits alongside the
+"""MindBridge module — the routine-engine layer that sits alongside the
 MindBridge companion.
 
 Three features, one loop:

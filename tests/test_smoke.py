@@ -139,7 +139,7 @@ def test_rate_limit_kicks_in():
     mindbridge._rate_hits.clear()   # don't leak state into other tests
 
 
-# --- Basecamp SF (routine engine) ---
+# --- MindBridge (routine engine) ---
 def test_basecamp_config():
     r = client().get("/api/basecamp/config")
     assert r.status_code == 200
