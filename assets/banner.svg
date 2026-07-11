@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" role="img" aria-label="MindBridge — a voice you can call">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e1b24"/>
+      <stop offset="0.55" stop-color="#0b2733"/>
+      <stop offset="1" stop-color="#0a151c"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.82" cy="0.18" r="0.7">
+      <stop offset="0" stop-color="#12313a" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#12313a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4fd1c5"/>
+      <stop offset="0.5" stop-color="#f4e4c1"/>
+      <stop offset="1" stop-color="#2c9c92"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="300" fill="url(#bg)"/>
+  <rect width="1200" height="300" fill="url(#glow)"/>
+  <g stroke="#4fd1c5" fill="none">
+    <path d="M0 232 Q 600 92 1200 232" stroke-opacity="0.28" stroke-width="2.5"/>
+    <path d="M0 252 Q 600 132 1200 252" stroke-opacity="0.14" stroke-width="2"/>
+    <g stroke-opacity="0.22" stroke-width="2">
+      <line x1="200" y1="190" x2="200" y2="242"/>
+      <line x1="400" y1="162" x2="400" y2="245"/>
+      <line x1="600" y1="152" x2="600" y2="247"/>
+      <line x1="800" y1="162" x2="800" y2="245"/>
+      <line x1="1000" y1="190" x2="1000" y2="242"/>
+    </g>
+  </g>
+  <circle cx="600" cy="150" r="70" fill="#4fd1c5" opacity="0.06"/>
+  <rect x="92" y="98" width="60" height="60" rx="16" fill="url(#mark)"/>
+  <text x="178" y="150" font-family="Helvetica, Arial, sans-serif" font-size="60" font-weight="700" fill="#eaf4f4">MindBridge</text>
+  <text x="180" y="194" font-family="Helvetica, Arial, sans-serif" font-size="23" fill="#a9c3c6">A voice you can call — an AI companion for veterans living with PTSD</text>
+  <text x="180" y="230" font-family="Helvetica, Arial, sans-serif" font-size="15" fill="#4fd1c5" letter-spacing="2.5">MLH × DIGITALOCEAN · AI FOR SOCIAL GOOD · 2026</text>
+</svg>

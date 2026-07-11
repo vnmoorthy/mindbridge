@@ -1,12 +1,21 @@
 <div align="center">
 
-# 🌉 MindBridge
+<img src="assets/banner.svg" alt="MindBridge — a voice you can call" width="100%" />
 
-**A voice you can call at 3 a.m. — a steady, honest AI battle-buddy for veterans living with PTSD.**
+<br/><br/>
 
-*Built for the MLH × DigitalOcean "AI for Social Good" Hackathon (SF 2026)*
+[![Live demo](https://img.shields.io/badge/▶_live_demo-vnmoorthy.github.io-4fd1c5?style=for-the-badge&labelColor=0b2733)](https://vnmoorthy.github.io/mindbridge/)
+&nbsp;
+[![CI](https://github.com/vnmoorthy/mindbridge/actions/workflows/ci.yml/badge.svg)](https://github.com/vnmoorthy/mindbridge/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
+![Python 3.12](https://img.shields.io/badge/python-3.12-3776ab?logo=python&logoColor=white)
+![Gradient AI](https://img.shields.io/badge/AI-DigitalOcean_Gradient-0069ff?logo=digitalocean&logoColor=white)
 
-**▶ [Try the live demo](https://vnmoorthy.github.io/mindbridge/)** — runs entirely in your browser, no sign-up
+### A voice you can call at 3 a.m. — a steady, honest AI battle-buddy for veterans living with PTSD.
+
+*Built for the MLH × DigitalOcean "AI for Social Good" Hackathon · SF 2026*
+
+**▶ [Try the live demo](https://vnmoorthy.github.io/mindbridge/)** — runs entirely in your browser, no sign-up.
 
 </div>
 
