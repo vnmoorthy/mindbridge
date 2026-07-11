@@ -266,5 +266,30 @@
   el.muteBtn.addEventListener("click", function () { muted = !muted; el.muteBtn.setAttribute("aria-pressed", String(muted)); if (muted && "speechSynthesis" in window) window.speechSynthesis.cancel(); });
   if (el.starterChips) el.starterChips.addEventListener("click", function (e) { var b = e.target.closest(".chip"); if (b) send(b.textContent); });
 
+  // ---------- grounding breath ----------
+  var breatheTimer = null;
+  var _phases = ["Breathe in", "Hold", "Breathe out", "Hold"];
+  function openBreathing() {
+    var ov = document.getElementById("breatheOverlay"), ph = document.getElementById("breathePhase");
+    if (!ov || !ph) return;
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    var i = 0; ph.textContent = _phases[0];
+    clearInterval(breatheTimer);
+    breatheTimer = setInterval(function () { i = (i + 1) % 4; ph.textContent = _phases[i]; }, 4000);
+    ov.hidden = false;
+    var done = document.getElementById("breatheDone"); if (done) done.focus();
+  }
+  function closeBreathing() {
+    var ov = document.getElementById("breatheOverlay"); if (ov) ov.hidden = true;
+    clearInterval(breatheTimer); breatheTimer = null;
+  }
+  var _bBtn = document.getElementById("breatheBtn");
+  if (_bBtn) _bBtn.addEventListener("click", openBreathing);
+  var _bDone = document.getElementById("breatheDone");
+  if (_bDone) _bDone.addEventListener("click", closeBreathing);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { var ov = document.getElementById("breatheOverlay"); if (ov && !ov.hidden) closeBreathing(); }
+  });
+
   setupRecognition();
 })();

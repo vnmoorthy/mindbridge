@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MindBridge — a voice you can call</title>
   <meta name="description" content="A peer-support voice companion for veterans living with PTSD. Listens, helps you get grounded, and connects you to real human help." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌉</text></svg>" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="MindBridge — a voice you can call" />
+  <meta property="og:description" content="A peer-support voice companion for U.S. veterans living with PTSD. Listens, grounds, and connects to real human help." />
+  <meta property="og:url" content="https://vnmoorthy.github.io/mindbridge/" />
+  <meta name="twitter:card" content="summary" />
   <link rel="preconnect" href="/" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
@@ -47,6 +53,14 @@
         <span class="mic__icon" aria-hidden="true">🎙️</span>
         <span class="mic__label">Tap to talk</span>
       </button>
+    </div>
+
+    <button id="breatheBtn" class="breathe-trigger" type="button">🫁 Take a grounding breath with me</button>
+
+    <div id="breatheOverlay" class="breathe-overlay" role="dialog" aria-modal="true" aria-label="Grounding breath exercise" hidden>
+      <div class="breathe-circle"><span id="breathePhase" class="breathe-phase">Breathe in</span></div>
+      <p class="breathe-hint">Follow the circle — breathe in as it grows, out as it settles. Four counts each.</p>
+      <button id="breatheDone" class="breathe-done" type="button">I feel steadier — done</button>
     </div>
 
     <form id="composer" class="composer" autocomplete="off">
