@@ -1,0 +1,107 @@
+"""Smoke tests — prove the core routes behave, including the safety path.
+
+Run with:  python -m pytest -q
+These run in demo mode (no inference key), so they exercise the fallback path
+and never make a network call.
+"""
+import json
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import app as mindbridge  # noqa: E402
+
+
+def client():
+    mindbridge.app.config["TESTING"] = True
+    return mindbridge.app.test_client()
+
+
+def test_health_ok():
+    r = client().get("/api/health")
+    assert r.status_code == 200
+    data = r.get_json()
+    assert data["status"] == "ok"
+    assert data["kb_docs"] >= 1
+    assert data["resources"] >= 1
+
+
+def test_resources_listed():
+    r = client().get("/api/resources")
+    assert r.status_code == 200
+    assert len(r.get_json()["resources"]) >= 1
+
+
+def test_normal_chat_returns_reply():
+    r = client().post("/api/chat", json={"messages": [
+        {"role": "user", "content": "I can't sleep, the nightmares keep coming back"}
+    ]})
+    assert r.status_code == 200
+    data = r.get_json()
+    assert data["crisis"] is False
+    assert isinstance(data["reply"], str) and len(data["reply"]) > 0
+
+
+def test_crisis_path_triggers_escalation():
+    r = client().post("/api/chat", json={"message": "I don't want to be here anymore, I want to die"})
+    assert r.status_code == 200
+    data = r.get_json()
+    assert data["crisis"] is True
+    assert "escalation" in data
+    # The Veterans Crisis Line contact must always surface.
+    blob = json.dumps(data).lower()
+    assert "988" in blob
+
+
+def test_empty_message_rejected():
+    r = client().post("/api/chat", json={"message": "   "})
+    assert r.status_code == 400
+
+
+def test_non_string_message_rejected():
+    r = client().post("/api/chat", json={"message": 5})
+    assert r.status_code == 400
+
+
+def test_malformed_history_does_not_crash():
+    r = client().post("/api/chat", json={"messages": ["not a dict", {"role": "user", "content": "hi there"}]})
+    assert r.status_code == 200
+
+
+# --- Crisis-detector regression tests (the review's confirmed false-negatives) ---
+from crisis import CrisisDetector  # noqa: E402
+
+_DETECTOR = CrisisDetector()
+
+
+def _triggers(text):
+    return _DETECTOR.check(text)["triggered"]
+
+
+def test_crisis_firearm_method_phrasing():
+    assert _triggers("I'm going to shoot myself")
+    assert _triggers("I just want to blow my head off")
+
+
+def test_crisis_curly_apostrophe_variants():
+    # iOS/macOS auto-substitute a curly apostrophe (U+2019); must still fire.
+    assert _triggers("I can’t do this anymore")
+    assert _triggers("I don’t want to be here anymore")
+    # dropped-apostrophe speech-to-text form
+    assert _triggers("I cant go on")
+
+
+def test_crisis_passive_ideation():
+    assert _triggers("I just want to disappear")
+    assert _triggers("I'm so tired of living")
+
+
+def test_crisis_harm_to_others():
+    assert _triggers("I'm going to hurt my wife")
+
+
+def test_benign_firearm_talk_not_flagged():
+    # A veteran mentioning their firearm hobby should not be treated as crisis.
+    assert not _triggers("I had a great day at the range with my pistol")
+    assert not _triggers("I felt calm on my morning run today")

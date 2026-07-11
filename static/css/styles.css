@@ -1,0 +1,237 @@
+/* MindBridge — calm, steady, low-arousal interface.
+   Design intent: nothing jarring. Soft gradients, generous space, one clear
+   focal point (the mic), and a safety net that is always visible. */
+
+:root {
+  --bg-0: #0e1b24;
+  --bg-1: #12313a;
+  --bg-2: #0b2733;
+  --teal: #4fd1c5;
+  --teal-deep: #2c9c92;
+  --sand: #f4e4c1;
+  --ink: #eaf4f4;
+  --ink-soft: #a9c3c6;
+  --ink-faint: #6f8f93;
+  --user-bubble: #1d3d47;
+  --bot-bubble: #17323c;
+  --danger: #ff6b6b;
+  --danger-deep: #b23b3b;
+  --card: rgba(255, 255, 255, 0.04);
+  --card-line: rgba(255, 255, 255, 0.09);
+  --radius: 18px;
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 800px at 20% -10%, var(--bg-1), transparent 60%),
+    radial-gradient(1000px 700px at 90% 110%, var(--bg-2), transparent 55%),
+    linear-gradient(160deg, var(--bg-0), #0a151c);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+.skip-link {
+  position: absolute; left: -999px; top: 0; z-index: 100;
+  background: var(--teal); color: #04222a; padding: 10px 16px; border-radius: 0 0 12px 0;
+}
+.skip-link:focus { left: 0; }
+
+/* ---------- Top bar ---------- */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px clamp(16px, 4vw, 40px);
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark {
+  width: 26px; height: 26px; border-radius: 8px;
+  background: conic-gradient(from 140deg, var(--teal), var(--sand), var(--teal-deep), var(--teal));
+  box-shadow: 0 0 22px rgba(79, 209, 197, 0.5);
+}
+.brand-name { font-weight: 650; letter-spacing: 0.2px; font-size: 1.1rem; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+
+.badge {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 4px 10px; border-radius: 999px; border: 1px solid var(--card-line);
+  color: var(--ink-soft);
+}
+.badge--demo { background: rgba(244, 228, 193, 0.08); color: var(--sand); }
+.badge--live { background: rgba(79, 209, 197, 0.12); color: var(--teal); border-color: rgba(79,209,197,0.4); }
+
+.icon-btn {
+  background: var(--card); border: 1px solid var(--card-line); color: var(--ink);
+  width: 40px; height: 40px; border-radius: 12px; cursor: pointer; font-size: 1rem;
+}
+.icon-btn__off { display: none; }
+.icon-btn[aria-pressed="true"] .icon-btn__on { display: none; }
+.icon-btn[aria-pressed="true"] .icon-btn__off { display: inline; }
+
+/* ---------- Stage ---------- */
+.stage {
+  flex: 1; display: flex; flex-direction: column;
+  width: min(760px, 100%); margin: 0 auto; padding: 0 clamp(14px, 4vw, 24px) 12px;
+}
+
+.transcript {
+  flex: 1; overflow-y: auto; padding: 8px 2px 16px;
+  display: flex; flex-direction: column; gap: 14px; scroll-behavior: smooth;
+}
+
+/* Welcome / empty state */
+.welcome { text-align: center; margin: auto 0; padding: 24px 8px; }
+.welcome h1 { font-size: clamp(1.5rem, 4.5vw, 2.15rem); line-height: 1.2; margin: 8px 0 10px; font-weight: 650; }
+.welcome-sub { color: var(--ink-soft); max-width: 46ch; margin: 0 auto 22px; line-height: 1.55; }
+.orb-halo {
+  width: 120px; height: 120px; margin: 0 auto 6px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 45%, rgba(79,209,197,0.5), rgba(79,209,197,0.05) 65%, transparent 72%);
+  animation: breathe 6s ease-in-out infinite;
+}
+@keyframes breathe { 0%,100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.08); opacity: 1; } }
+
+.chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.chip {
+  background: var(--card); border: 1px solid var(--card-line); color: var(--ink-soft);
+  padding: 10px 14px; border-radius: 999px; cursor: pointer; font-size: 0.9rem;
+  transition: border-color 0.2s, color 0.2s, transform 0.1s; font-family: inherit;
+}
+.chip:hover { border-color: var(--teal); color: var(--ink); transform: translateY(-1px); }
+
+/* Message bubbles */
+.msg { display: flex; flex-direction: column; max-width: 84%; animation: rise 0.25s ease; }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.msg--user { align-self: flex-end; align-items: flex-end; }
+.msg--bot { align-self: flex-start; align-items: flex-start; }
+.msg__who { font-size: 0.72rem; color: var(--ink-faint); margin: 0 6px 4px; }
+.bubble { padding: 12px 16px; border-radius: 16px; line-height: 1.5; white-space: pre-wrap; }
+.msg--user .bubble { background: var(--user-bubble); border-top-right-radius: 5px; }
+.msg--bot .bubble { background: var(--bot-bubble); border: 1px solid var(--card-line); border-top-left-radius: 5px; }
+.msg__sources { font-size: 0.72rem; color: var(--ink-faint); margin: 6px 6px 0; }
+
+/* Resource cards under a bot message */
+.resources { display: flex; flex-direction: column; gap: 8px; margin: 10px 4px 0; width: 100%; }
+.res-card {
+  background: var(--card); border: 1px solid var(--card-line); border-radius: 14px;
+  padding: 12px 14px; display: flex; flex-direction: column; gap: 3px;
+}
+.res-card__name { font-weight: 600; font-size: 0.95rem; }
+.res-card__desc { color: var(--ink-soft); font-size: 0.85rem; line-height: 1.45; }
+.res-card__meta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 4px; font-size: 0.83rem; }
+.res-card__meta a { color: var(--teal); text-decoration: none; }
+.res-card__meta a:hover { text-decoration: underline; }
+.res-card__addr { color: var(--ink-faint); font-size: 0.8rem; }
+
+/* Typing indicator */
+.typing { display: inline-flex; gap: 5px; padding: 14px 16px; }
+.typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-faint); animation: blink 1.2s infinite; }
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink { 0%,60%,100% { opacity: 0.3; } 30% { opacity: 1; } }
+
+/* Interim speech text */
+.interim { text-align: center; color: var(--teal); min-height: 20px; font-style: italic; opacity: 0; transition: opacity 0.2s; }
+.interim.show { opacity: 1; }
+
+/* ---------- Mic ---------- */
+.mic-wrap { display: flex; justify-content: center; padding: 6px 0 12px; }
+.mic {
+  position: relative; width: 92px; height: 92px; border-radius: 50%; cursor: pointer;
+  border: none; color: #04222a; font-family: inherit;
+  background: radial-gradient(circle at 50% 40%, var(--teal), var(--teal-deep));
+  box-shadow: 0 10px 34px rgba(79, 209, 197, 0.4);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  transition: transform 0.12s;
+}
+.mic:hover { transform: translateY(-2px); }
+.mic:active { transform: scale(0.97); }
+.mic__icon { font-size: 1.5rem; }
+.mic__label { font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.mic__ring {
+  position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--teal); opacity: 0;
+}
+.mic.listening { background: radial-gradient(circle at 50% 40%, #ff9d7a, #e0603a); box-shadow: 0 10px 40px rgba(224, 96, 58, 0.5); }
+.mic.listening .mic__ring { animation: pulse-ring 1.4s ease-out infinite; opacity: 1; }
+@keyframes pulse-ring { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(1.5); opacity: 0; } }
+.mic[disabled] { opacity: 0.4; cursor: not-allowed; }
+
+/* ---------- Composer ---------- */
+.composer { display: flex; gap: 10px; padding: 4px 0 8px; }
+.composer__input {
+  flex: 1; background: var(--card); border: 1px solid var(--card-line); color: var(--ink);
+  border-radius: 14px; padding: 14px 16px; font-size: 1rem; font-family: inherit;
+}
+.composer__input::placeholder { color: var(--ink-faint); }
+.composer__input:focus { outline: none; border-color: var(--teal); }
+.composer__send {
+  background: var(--teal); color: #04222a; border: none; border-radius: 14px;
+  padding: 0 22px; font-weight: 700; cursor: pointer; font-family: inherit; font-size: 0.95rem;
+}
+.composer__send:hover { background: #5fe0d4; }
+
+/* ---------- Safety footer ---------- */
+.safety-footer {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px;
+  padding: 12px 16px; font-size: 0.82rem; color: var(--ink-faint);
+  border-top: 1px solid var(--card-line); text-align: center;
+}
+.safety-footer__cta strong { color: var(--sand); }
+
+/* ---------- Crisis overlay ---------- */
+.crisis-overlay {
+  position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center;
+  background: rgba(6, 12, 16, 0.82); backdrop-filter: blur(6px); padding: 20px;
+  animation: fade 0.25s ease;
+}
+/* The [hidden] attribute must win over display:flex above. */
+.crisis-overlay[hidden] { display: none; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+.crisis-card {
+  width: min(520px, 100%); background: linear-gradient(180deg, #1b2b33, #14232a);
+  border: 1px solid rgba(255, 107, 107, 0.4); border-radius: 22px; padding: 26px;
+  box-shadow: var(--shadow); border-top: 4px solid var(--danger);
+}
+.crisis-card__title { margin: 0 0 12px; font-size: 1.4rem; }
+.crisis-card__body { color: var(--ink-soft); line-height: 1.6; font-size: 0.95rem; }
+.crisis-card__body strong { color: var(--ink); }
+.crisis-card__body a { color: var(--teal); }
+.crisis-card__actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0 8px; }
+.btn { padding: 14px 20px; border-radius: 14px; font-weight: 700; text-decoration: none; text-align: center; flex: 1; min-width: 160px; }
+.btn--primary { background: var(--danger); color: #fff; box-shadow: 0 8px 24px rgba(255, 107, 107, 0.35); }
+.btn--ghost { background: transparent; border: 1px solid var(--card-line); color: var(--ink); }
+.crisis-card__resources { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; }
+.crisis-card__resources .res-card { background: rgba(255,255,255,0.05); }
+.crisis-card__close {
+  margin-top: 18px; width: 100%; background: transparent; border: 1px solid var(--card-line);
+  color: var(--ink-soft); padding: 12px; border-radius: 12px; cursor: pointer; font-family: inherit;
+}
+
+/* Clear, high-contrast keyboard focus for every interactive control. */
+.chip:focus-visible,
+.mic:focus-visible,
+.icon-btn:focus-visible,
+.btn:focus-visible,
+.composer__send:focus-visible,
+.crisis-card__close:focus-visible,
+.res-card__meta a:focus-visible {
+  outline: 3px solid var(--sand);
+  outline-offset: 2px;
+}
+.composer__input:focus-visible {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(79, 209, 197, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
