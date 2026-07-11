@@ -1041,5 +1041,80 @@
       "mid": "Solid, honest read — middle of the road is a real place to stand, and most days live right here. What I'm noticing is that you showed up and reported in, and that's the part that compounds. Anything in today's plan you want to adjust, or are we good to run it?",
       "high": "Strong read today, and I can hear it in how you're reporting. Days like this are worth spending, not just getting through — so what do you want to do with it? Your call all the way; I'm just here to back it."
     }
-  }
+  },
+  "squads": [
+    {
+      "id": "eco-lands-end",
+      "title": "Eco-Restoration",
+      "location": "Lands End, SF",
+      "priority": "High Priority",
+      "category": "civic",
+      "description": "Help restore native coastal habitats — clearing invasive species and reinforcing trail borders to protect the local ecosystem.",
+      "lead": "Sgt. Miller (Ret.)",
+      "filled": 4,
+      "size": 6,
+      "status": "open"
+    },
+    {
+      "id": "garden-presidio",
+      "title": "Community Garden Build",
+      "location": "Presidio, SF",
+      "priority": "Community",
+      "category": "civic",
+      "description": "Build raised beds and irrigation for a community garden serving nearby veteran housing.",
+      "lead": "Cpl. Davis",
+      "filled": 4,
+      "size": 6,
+      "status": "open",
+      "note": "2 spots left"
+    },
+    {
+      "id": "food-bank-dogpatch",
+      "title": "Food Bank Logistics",
+      "location": "Dogpatch, SF",
+      "priority": "Logistics",
+      "category": "civic",
+      "description": "Run intake, sorting, and distribution lines at a neighborhood food bank — squad leadership welcome.",
+      "lead": "Lt. Chen (Ret.)",
+      "filled": 6,
+      "size": 6,
+      "status": "waitlist"
+    },
+    {
+      "id": "trail-presidio",
+      "title": "Trail Stewardship",
+      "location": "Presidio Trust",
+      "priority": "Medium",
+      "category": "parks",
+      "description": "Weekly trail maintenance and historic-preservation work with the Presidio Trust land-stewardship crew.",
+      "lead": "SSgt. Reyes (Ret.)",
+      "filled": 3,
+      "size": 8,
+      "status": "open"
+    },
+    {
+      "id": "literacy-sfpl",
+      "title": "Digital Literacy Mentor",
+      "location": "SF Public Library — Main",
+      "priority": "Ongoing",
+      "category": "library",
+      "description": "Mentor fellow veterans through basic digital-literacy and job-application workshops.",
+      "lead": "PO2 Nguyen (Ret.)",
+      "filled": 2,
+      "size": 5,
+      "status": "open"
+    },
+    {
+      "id": "beach-cleanup",
+      "title": "Ocean Beach Cleanup",
+      "location": "Ocean Beach, SF",
+      "priority": "Low intensity",
+      "category": "parks",
+      "description": "Low-stimulation morning beach cleanup — a gentle re-entry into group service and fresh air.",
+      "lead": "Open — lead this one",
+      "filled": 1,
+      "size": 10,
+      "status": "open"
+    }
+  ]
 }

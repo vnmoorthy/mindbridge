@@ -47,6 +47,7 @@ class Basecamp:
         self.tracks = data.get("tracks", [])
         self.phases = sorted(data.get("phases", []), key=lambda p: p.get("n", 0))
         self.sitrep = data.get("sitrep", {})
+        self.squads = data.get("squads", [])
         self._by_id = {t.get("id"): t for t in self.tracks}
 
     def loaded(self):
@@ -58,6 +59,7 @@ class Basecamp:
             "tracks": [{"id": t.get("id"), "name": t.get("name"), "focus": t.get("focus")} for t in self.tracks],
             "phases": self.phases,
             "sitrep": {k: v for k, v in self.sitrep.items() if k not in ("systemPrompt", "autonomyGuidance")},
+            "squads": self.squads,
         }
 
     def phase_for_rci(self, rci):
