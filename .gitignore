@@ -23,3 +23,6 @@ Basecamp-SF-pitch-deck.pdf
 Thumbs.db
 .idea/
 .vscode/
+
+# Office lock/temp files
+~$*
