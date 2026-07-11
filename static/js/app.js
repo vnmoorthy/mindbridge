@@ -5,6 +5,7 @@
   "use strict";
 
   var messages = []; // conversation history sent to the server
+  var MAX_HISTORY = 24; // cap turns sent per request to bound payload size
   var muted = false;
   var listening = false;
   var recognition = null;
@@ -227,10 +228,16 @@
     setSending(true);
     showTyping();
 
+    // Abort a stuck request so the UI can never hang on the typing indicator.
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, 30000);
+
     fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: messages }),
+      // Cap history so the payload can't grow unbounded across a long chat.
+      body: JSON.stringify({ messages: messages.slice(-MAX_HISTORY) }),
+      signal: controller.signal,
     })
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
@@ -253,7 +260,7 @@
         hideTyping();
         addMessage("bot", "I'm having trouble connecting right now, but I'm still here. If this is an emergency, please call the Veterans Crisis Line: dial 988, then press 1.");
       })
-      .then(function () { setSending(false); });
+      .then(function () { clearTimeout(timer); setSending(false); });
   }
 
   // ---------- voice in ----------
