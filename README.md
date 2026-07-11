@@ -6,6 +6,8 @@
 
 *Built for the MLH × DigitalOcean "AI for Social Good" Hackathon (SF 2026)*
 
+**▶ [Try the live demo](https://vnmoorthy.github.io/mindbridge/)** — runs entirely in your browser, no sign-up
+
 </div>
 
 ---
