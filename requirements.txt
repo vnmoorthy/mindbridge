@@ -1,3 +1,6 @@
 Flask==3.0.3
 gunicorn==22.0.0
 openai==1.51.2
+# Pin httpx: openai 1.51.x passes `proxies=` to httpx, which httpx>=0.28 removed
+# (TypeError: unexpected keyword argument 'proxies'). 0.27.2 is compatible.
+httpx==0.27.2
