@@ -26,6 +26,27 @@ _FALLBACK_PHRASES = [
     "wish i were dead", "don't want to be here anymore", "do not want to be here anymore",
     "no reason to live", "better off dead", "take my own life", "suicidal", "hurt myself",
     "hurting myself", "end it all", "can't go on", "cannot go on",
+    # "can't keep myself safe" family (self-harm risk stated as loss of safety/control)
+    "can't keep myself safe", "keep myself safe much longer", "keep myself safe anymore",
+    "how much longer i can keep myself", "don't feel safe with myself", "not safe with myself",
+    "unsafe with myself", "scared of what i might do", "afraid of what i might do",
+    "can't guarantee my own safety", "can't hold on much longer",
+]
+
+# Reassurance guard: a distressed person may say a risk phrase inside a clearly
+# REASSURING sentence ("I would never kill myself, I'm doing better"). We suppress
+# the overlay only when every matched risk phrase is directly negated by one of
+# these markers AND no ambivalence marker is present. Ambivalence ALWAYS wins —
+# "I can't promise I won't hurt myself" must still escalate.
+_REASSURE_BEFORE = [
+    "would never", "wouldn't ever", "never going to", "never gonna", "not going to",
+    "not gonna", "no longer", "don't want to", "do not want to", "promise i'm not",
+    "promise i am not", "not planning to", "would not", "won't ever",
+]
+_AMBIVALENCE = [
+    "can't promise", "cannot promise", "won't be able", "not sure", "don't know if",
+    "might", "maybe", "part of me", "some days", "sometimes i", "keep thinking",
+    "scared i", "afraid i", "what if i", "starting to", "close to", "almost",
 ]
 _FALLBACK_MARKDOWN = (
     "**You deserve to talk to someone who can help right now.**\n\n"
@@ -79,6 +100,16 @@ class CrisisDetector:
         ]
         words = set(_WORD.findall(t))
         matched_keywords = sorted(words & self.keywords)
+
+        # Suppress clear reassurance ("I would never kill myself, I'm doing better")
+        # unless any ambivalence marker is present, in which case we always escalate.
+        if matched_phrases and not any(a in t for a in _AMBIVALENCE):
+            def _negated(phrase):
+                i = t.find(phrase)
+                return any(r in t[max(0, i - 25):i] for r in _REASSURE_BEFORE)
+            if all(_negated(p) for p in matched_phrases):
+                matched_phrases = []
+
         triggered = bool(matched_phrases) or len(matched_keywords) >= 2
         return {
             "triggered": triggered,

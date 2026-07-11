@@ -105,3 +105,20 @@ def test_benign_firearm_talk_not_flagged():
     # A veteran mentioning their firearm hobby should not be treated as crisis.
     assert not _triggers("I had a great day at the range with my pistol")
     assert not _triggers("I felt calm on my morning run today")
+
+
+def test_crisis_false_negative_keep_myself_safe():
+    assert _triggers("idk how much longer i can keep myself safe")
+    assert _triggers("I'm scared of what I might do")
+
+
+def test_crisis_reassurance_is_suppressed():
+    # Clear reassurance should NOT take over the screen (988 stays in the footer).
+    assert not _triggers("I would never kill myself, I am doing much better now")
+    assert not _triggers("I promise I am not going to hurt myself")
+
+
+def test_crisis_ambivalence_always_overrides_reassurance():
+    # Negation with ambivalence is high-risk and MUST still escalate.
+    assert _triggers("I can't promise I won't hurt myself")
+    assert _triggers("I don't want to kill myself but I keep thinking about it")
