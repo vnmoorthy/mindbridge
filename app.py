@@ -21,6 +21,26 @@ from demo_responder import demo_reply
 
 BASE = Path(__file__).parent
 
+
+def _load_dotenv():
+    """Load .env directly in Python (tolerates spaces/quotes; never echoes values).
+    Only fills vars not already set in the real environment."""
+    p = BASE / ".env"
+    if not p.exists():
+        return
+    for line in p.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, val = line.split("=", 1)
+        key = key.strip()
+        val = val.strip().strip('"').strip("'").strip()
+        if key and key not in os.environ:
+            os.environ[key] = val
+
+
+_load_dotenv()
+
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
 # Bound request bodies so a huge payload can't exhaust memory (Flask -> 413).
