@@ -16,6 +16,7 @@
 *Built for the MLH × DigitalOcean "AI for Social Good" Hackathon · SF 2026*
 
 **▶ [Try the live demo](https://vnmoorthy.github.io/mindbridge/)** — runs entirely in your browser, no sign-up.
+&nbsp; · &nbsp; **📊 [Pitch deck (10 slides)](MindBridge-pitch-deck.pptx)**
 
 </div>
 

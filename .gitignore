@@ -13,6 +13,10 @@ env/
 .env
 .env.local
 
+# Deck render artifacts
+slide-*.jpg
+MindBridge-pitch-deck.pdf
+
 # OS / editor
 .DS_Store
 Thumbs.db
